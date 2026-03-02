@@ -26,8 +26,8 @@ const ChartBox = (props: Props) => {
         </Link>
       </div>
       <div className="chartInfo">
-        <div className="chart">
-          <ResponsiveContainer width="99%" height="100%">
+        <div style={{ width: "100%", height: 250 }} className="chart">
+          <ResponsiveContainer width="100%" height="100%">
             <LineChart data={props.chartData}>
               <Tooltip
                 contentStyle={{ background: "transparent", border: "none" }}

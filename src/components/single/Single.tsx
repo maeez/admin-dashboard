@@ -19,9 +19,16 @@ type Props = {
     data: object[];
   };
   activities?: { time: string; text: string }[];
+  onUpdate?: (data: any) => void;
 };
 
 const Single = (props: Props) => {
+  const handleUpdate = () => {
+    if (props.onUpdate) {
+      props.onUpdate(props);
+    }
+  };
+
   return (
     <div className="single">
       <div className="view">
@@ -29,13 +36,13 @@ const Single = (props: Props) => {
           <div className="topInfo">
             {props.img && <img src={props.img} alt="" />}
             <h1>{props.title}</h1>
-            <button>Update</button>
+            <button onClick={handleUpdate}>Update</button>
           </div>
           <div className="details">
-            {Object.entries(props.info).map((item) => (
-              <div className="item" key={item[0]}>
-                <span className="itemTitle">{item[0]}</span>
-                <span className="itemValue">{item[1]}</span>
+            {Object.entries(props.info || {}).map(([key, value]) => (
+              <div className="item" key={key}>
+                <span className="itemTitle">{key}</span>
+                <span className="itemValue">{String(value)}</span>
               </div>
             ))}
           </div>

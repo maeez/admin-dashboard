@@ -58,7 +58,7 @@ const BigChartBox = () => {
     <div className="bigChartBox">
       <h1>Revenue Analytics</h1>
       <div className="chart">
-        <ResponsiveContainer width="99%" height="100%">
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
             margin={{

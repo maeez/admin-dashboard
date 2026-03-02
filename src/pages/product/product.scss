@@ -1,3 +1,12 @@
-.product{
-  
+.product {
+  padding: 20px;
+
+  .single {
+    display: flex;
+    gap: 50px;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
+  }
 }

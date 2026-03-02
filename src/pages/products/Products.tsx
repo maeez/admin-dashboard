@@ -3,73 +3,77 @@ import "./products.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-import { products } from "../../data";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  getProducts,
+  deleteProduct,
+  createProduct,
+} from "../../services/productService";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
   {
-    field: "img",
+    field: "thumbnail",
     headerName: "Image",
     width: 100,
     renderCell: (params) => {
-      return <img src={params.row.img || "/noavatar.png"} alt="" />;
+      return <img src={params.row.thumbnail} alt="" />;
     },
   },
   {
     field: "title",
-    type: "string",
     headerName: "Title",
     width: 250,
   },
   {
-    field: "color",
-    type: "string",
-    headerName: "Color",
-    width: 150,
-  },
-  {
     field: "price",
-    type: "string",
     headerName: "Price",
-    width: 200,
-  },
-  {
-    field: "producer",
-    headerName: "Producer",
-    type: "string",
-    width: 200,
-  },
-  {
-    field: "createdAt",
-    headerName: "Created At",
-    width: 200,
-    type: "string",
-  },
-  {
-    field: "inStock",
-    headerName: "In Stock",
     width: 150,
-    type: "boolean",
+  },
+  {
+    field: "brand",
+    headerName: "Brand",
+    width: 200,
+  },
+  {
+    field: "stock",
+    headerName: "Stock",
+    width: 120,
   },
 ];
 
 const Products = () => {
   const [open, setOpen] = useState(false);
-  const [productList, setProductList] = useState<any[]>(products);
+  const queryClient = useQueryClient();
 
-  const handleAddProduct = (newProductData: Record<string, unknown>) => {
-    const newProduct: any = {
-      id: Math.max(...productList.map(p => p.id as number), 0) + 1,
-      img: "",
-      ...newProductData,
-    };
-    setProductList([...productList, newProduct]);
-    setOpen(false);
-  };
+  const { data: products, isLoading } = useQuery({
+  queryKey: ["products"],
+  queryFn: getProducts,
+  staleTime: Infinity,
+  refetchOnMount: false,
+  refetchOnWindowFocus: false,
+});
 
-  const handleDeleteProduct = (id: number) => {
-    setProductList(productList.filter(product => product.id !== id));
-  };
+  const deleteMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      setOpen(false);
+    },
+  });
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="products">
@@ -77,8 +81,22 @@ const Products = () => {
         <h1>Products</h1>
         <button onClick={() => setOpen(true)}>Add New Product</button>
       </div>
-      <DataTable slug="products" columns={columns} rows={productList} onDelete={handleDeleteProduct} />
-      {open && <Add slug="product" columns={columns} setOpen={setOpen} onAdd={handleAddProduct} />}
+
+      <DataTable
+        slug="products"
+        columns={columns}
+        rows={products || []}
+        onDelete={(id: number) => deleteMutation.mutate(id)}
+      />
+
+      {open && (
+        <Add
+          slug="product"
+          columns={columns}
+          setOpen={setOpen}
+          onAdd={(data) => createMutation.mutate(data)}
+        />
+      )}
     </div>
   );
 };

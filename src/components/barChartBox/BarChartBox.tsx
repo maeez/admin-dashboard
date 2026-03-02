@@ -13,7 +13,7 @@ const BarChartBox = (props: Props) => {
     <div className="barChartBox">
       <h1>{props.title}</h1>
       <div className="chart">
-        <ResponsiveContainer width="99%" height={150}>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={props.chartData}>
             <Tooltip
               contentStyle={{ background: "#2a3447", borderRadius: "5px" }}
