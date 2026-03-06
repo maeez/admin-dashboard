@@ -20,30 +20,12 @@ const columns: GridColDef[] = [
     field: "thumbnail",
     headerName: "Image",
     width: 100,
-    renderCell: (params) => {
-      return <img src={params.row.thumbnail} alt="" />;
-    },
+    renderCell: (params) => <img src={params.row.thumbnail} alt="" />,
   },
-  {
-    field: "title",
-    headerName: "Title",
-    width: 250,
-  },
-  {
-    field: "price",
-    headerName: "Price",
-    width: 150,
-  },
-  {
-    field: "brand",
-    headerName: "Brand",
-    width: 200,
-  },
-  {
-    field: "stock",
-    headerName: "Stock",
-    width: 120,
-  },
+  { field: "title", headerName: "Title", flex: 2, minWidth: 200 },
+  { field: "price", headerName: "Price", flex: 1, minWidth: 100 },
+  { field: "brand", headerName: "Brand", flex: 1, minWidth: 150 },
+  { field: "stock", headerName: "Stock", flex: 1, minWidth: 100 },
 ];
 
 const Products = () => {
@@ -51,24 +33,38 @@ const Products = () => {
   const queryClient = useQueryClient();
 
   const { data: products, isLoading } = useQuery({
-  queryKey: ["products"],
-  queryFn: getProducts,
-  staleTime: Infinity,
-  refetchOnMount: false,
-  refetchOnWindowFocus: false,
-});
+    queryKey: ["products"],
+    queryFn: getProducts,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+        if (!old) return [];
+        return old.filter((item) => String(item.id) !== String(variables));
+      });
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: createProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+    mutationFn: async (newProduct: any) => {
+      const newId = Date.now() + Math.floor(Math.random() * 1000);
+      return {
+        ...newProduct,
+        id: newId,
+        thumbnail: newProduct.thumbnail || "/no-image.png",
+        price: Number(newProduct.price) || 0,
+        stock: Number(newProduct.stock) || 0,
+      };
+    },
+    onSuccess: (newData) => {
+      queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+        return [newData, ...(old || [])];
+      });
       setOpen(false);
     },
   });
@@ -86,7 +82,7 @@ const Products = () => {
         slug="products"
         columns={columns}
         rows={products || []}
-        onDelete={(id: number) => deleteMutation.mutate(id)}
+        onDelete={(id: number | string) => deleteMutation.mutate(id)}
       />
 
       {open && (
