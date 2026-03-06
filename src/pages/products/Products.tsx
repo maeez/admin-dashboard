@@ -11,7 +11,6 @@ import {
 import {
   getProducts,
   deleteProduct,
-  createProduct,
 } from "../../services/productService";
 
 const columns: GridColDef[] = [
@@ -82,7 +81,7 @@ const Products = () => {
         slug="products"
         columns={columns}
         rows={products || []}
-        onDelete={(id: number | string) => deleteMutation.mutate(id)}
+        onDelete={(id: number | string) => deleteMutation.mutate(Number(id))}
       />
 
       {open && (
