@@ -24,14 +24,18 @@ const User = () => {
 
   const { data: rawUser, isLoading } = useQuery({
     queryKey: ["user", id],
-    queryFn: () => getUser(userId),
-    enabled: !!id,
-    initialData: () => {
-      return queryClient
-        .getQueryData<any[]>(["users"])
-        ?.find((u) => u.id === userId);
+    queryFn: async () => {
+      const allUsers = queryClient.getQueryData<any[]>(["users"]);
+      const localUser = allUsers?.find((u) => Number(u.id) === userId);
+
+      if (localUser) return localUser;
+      
+      return await getUser(userId);
     },
+    enabled: !!id,
+    staleTime: Infinity,
   });
+
   const mutation = useMutation({
     mutationFn: async (updatedData: any) => updatedData,
     onSuccess: (data) => {
@@ -42,9 +46,10 @@ const User = () => {
 
       queryClient.setQueryData(["users"], (old: any[] = []) => {
         return old.map((user) => 
-          user.id === Number(id) ? { ...user, ...data } : user
+          Number(user.id) === userId ? { ...user, ...data } : user
         );
       });
+      setOpen(false);
     },
   });
 
@@ -55,13 +60,14 @@ const User = () => {
 
   const formattedUser = {
     ...rawUser,
-    img: rawUser.image || "/noavatar.png",
+    img: rawUser.image || rawUser.img || "/noavatar.png",
     title: fullName,
     info: {
       firstName: rawUser.firstName,
       lastName: rawUser.lastName,
       email: rawUser.email,
       phone: rawUser.phone,
+      verified: rawUser.verified ? "Yes" : "No",
     },
     chart: singleUser.chart,
     activities: singleUser.activities.map((activity) => ({

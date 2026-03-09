@@ -79,6 +79,7 @@ const Update = (props: Props) => {
                   <input
                     type={column.type === "number" ? "number" : "text"}
                     name={column.field}
+                    maxLength={column.field === "phone" ? 10 : undefined}
                     defaultValue={props.data.info?.[column.field] || props.data[column.field]}
                     onKeyPress={(e) => {
                       if (column.field === "phone" && !/[0-9]/.test(e.key)) e.preventDefault();

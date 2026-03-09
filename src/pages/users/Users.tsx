@@ -27,58 +27,49 @@ const Users = () => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
-    queryFn:getUsers,
+    queryFn: getUsers,
     staleTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
   const addUserMutation = useMutation({
-    mutationFn: async (newUser: any) => newUser,
-    onMutate: async (newUser) => {
-      await queryClient.cancelQueries({ queryKey: ["users"] });
+    mutationFn: async (newUser: any) => {
+      const currentUsers = queryClient.getQueryData<any[]>(["users"]) || [];
+      const nextId = currentUsers.length > 0 
+        ? Math.max(...currentUsers.map(u => Number(u.id))) + 1 
+        : 31;
 
-      const previousUsers = queryClient.getQueryData(["users"]);
-
-      queryClient.setQueryData(["users"], (old: any[] = []) => [
-        ...old,
-        {
-          id: old.length ? Math.max(...old.map(u => u.id)) + 1 : 1,
-          img: "",
-          ...newUser,
-        },
-      ]);
-
-      return { previousUsers };
+      return {
+        ...newUser,
+        id: nextId,
+        img: newUser.img || "/noavatar.png",
+        verified: newUser.verified || false,
+      };
     },
-    onError: (_err, _newUser, context) => {
-      if (context?.previousUsers) {
-        queryClient.setQueryData(["users"], context.previousUsers);
-      }
+    onSuccess: (newData) => {
+      queryClient.setQueryData(["users"], (old: any[] | undefined) => {
+        return [newData, ...(old || [])];
+      });
+      setOpen(false);
     },
   });
 
   const deleteUserMutation = useMutation({
-    mutationFn: async (id: number) => id,
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ["users"] });
-
-      const previousUsers = queryClient.getQueryData(["users"]);
-
-      queryClient.setQueryData(["users"], (old: any[] = []) =>
-        old.filter((user) => user.id !== id)
-      );
-
-      return { previousUsers };
+    mutationFn: async (id: number) => {
+      return id;
     },
-    onError: (_err, _id, context) => {
-      if (context?.previousUsers) {
-        queryClient.setQueryData(["users"], context.previousUsers);
-      }
+    onSuccess: (variables) => {
+      queryClient.setQueryData(["users"], (old: any[] | undefined) => {
+        if (!old) return [];
+        return old.filter((item) => Number(item.id) !== Number(variables));
+      });
     },
   });
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="users">
@@ -91,7 +82,7 @@ const Users = () => {
         slug="users"
         columns={columns}
         rows={users}
-        onDelete={(id) => deleteUserMutation.mutate(id)}
+        onDelete={(id) => deleteUserMutation.mutate(Number(id))}
       />
 
       {open && (
@@ -99,10 +90,7 @@ const Users = () => {
           slug="user"
           columns={columns}
           setOpen={setOpen}
-          onAdd={(data) => {
-            addUserMutation.mutate(data);
-            setOpen(false);
-          }}
+          onAdd={(data) => addUserMutation.mutate(data)}
         />
       )}
     </div>

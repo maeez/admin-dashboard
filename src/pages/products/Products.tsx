@@ -40,21 +40,61 @@ const Products = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: (_data, variables) => {
-      queryClient.setQueryData(["products"], (old: any[] | undefined) => {
-        if (!old) return [];
-        return old.filter((item) => String(item.id) !== String(variables));
-      });
-    },
-  });
+  mutationFn: async (id: number) => {
+    if (id <= 30) {
+      return await deleteProduct(id);
+    }
+    return id;
+  },
+  onSuccess: (_data, variables) => {
+    queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+      if (!old) return [];
+      return old.filter((item) => Number(item.id) !== Number(variables));
+    });
+  },
+});
+
+  // const deleteMutation = useMutation({
+  //   mutationFn: deleteProduct,
+  //   onSuccess: (_data, variables) => {
+  //     queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+  //       if (!old) return [];
+  //       return old.filter((item) => String(item.id) !== String(variables));
+  //     });
+  //   },
+  // });
+
+
+
+// const createMutation = useMutation({
+//   mutationFn: async (newProduct: any) => {
+//     const newId = Date.now() + Math.floor(Math.random() * 1000);
+//     return {
+//       ...newProduct,
+//       id: newId,
+//       thumbnail: newProduct.thumbnail || "/no-image.png",
+//       price: Number(newProduct.price),
+//       stock: Number(newProduct.stock),
+//     };
+//   },
+//   onSuccess: (newData) => {
+//     queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+//       return [newData, ...(old || [])];
+//     });
+//     setOpen(false);
+//   },
+// });
 
 const createMutation = useMutation({
   mutationFn: async (newProduct: any) => {
-    const newId = Date.now() + Math.floor(Math.random() * 1000);
+    const currentProducts = queryClient.getQueryData<any[]>(["products"]) || [];
+    const nextId = currentProducts.length > 0 
+      ? Math.max(...currentProducts.map(p => Number(p.id))) + 1 
+      : 31;
+
     return {
       ...newProduct,
-      id: newId,
+      id: nextId,
       thumbnail: newProduct.thumbnail || "/no-image.png",
       price: Number(newProduct.price),
       stock: Number(newProduct.stock),

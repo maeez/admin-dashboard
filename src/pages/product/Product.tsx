@@ -20,12 +20,29 @@ const Product = () => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  // const { data: product, isLoading } = useQuery({
+  //   queryKey: ["product", id],
+  //   queryFn: () => getProduct(Number(id)),
+  //   enabled: !!id,
+  //   staleTime: Infinity,
+  // });
+
   const { data: product, isLoading } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => getProduct(Number(id)),
-    enabled: !!id,
-    staleTime: Infinity,
-  });
+  queryKey: ["product", id],
+  queryFn: async () => {
+    const productId = Number(id);
+    
+    if (productId > 30) {
+      const allProducts = queryClient.getQueryData<any[]>(["products"]);
+      const localProduct = allProducts?.find(p => Number(p.id) === productId);
+      if (localProduct) return localProduct;
+    }
+    
+    return await getProduct(productId);
+  },
+  enabled: !!id,
+  staleTime: Infinity,
+});
 
   const updateMutation = useMutation({
     mutationFn: async (data: any) => data,
