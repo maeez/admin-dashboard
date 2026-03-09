@@ -1,58 +1,83 @@
 import { GridColDef } from "@mui/x-data-grid";
-import "./add.scss";
 import { useState } from "react";
+import "./add.scss";
 
 type Props = {
   slug: string;
   columns: GridColDef[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onAdd?: (data: Record<string, unknown>) => void;
+  onAdd: (data: any) => void;
 };
 
 const Add = (props: Props) => {
-  const [formData, setFormData] = useState<Record<string, unknown>>({});
-
-  const handleInputChange = (field: string, value: unknown) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (props.onAdd) {
-      props.onAdd(formData);
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+    const data: any = Object.fromEntries(formData.entries());
+
+    if (props.slug === "product") {
+      if (!data.price || isNaN(Number(data.price)) || Number(data.price) <= 0) {
+        setError("Price must be a valid number greater than 0.");
+        return;
+      }
+      if (!data.stock || isNaN(Number(data.stock)) || Number(data.stock) < 0) {
+        setError("Stock must be a valid number (0 or more).");
+        return;
+      }
     }
+
+    if (props.slug === "user") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (data.email && !emailRegex.test(data.email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+      if (data.phone && data.phone.length !== 10) {
+        setError("Phone number must be exactly 10 digits.");
+        return;
+      }
+    }
+
+    props.columns.forEach((col) => {
+      if (col.type === "boolean") {
+        data[col.field] = formData.get(col.field) === "on";
+      }
+    });
+
+    props.onAdd(data);
+    props.setOpen(false);
   };
 
   return (
     <div className="add">
       <div className="modal">
-        <span className="close" onClick={() => props.setOpen(false)}>
-          X
-        </span>
+        <span className="close" onClick={() => props.setOpen(false)}>X</span>
         <h1>Add new {props.slug}</h1>
+        {error && <p className="error-msg" style={{ color: "tomato", fontSize: "14px", marginBottom: "10px" }}>{error}</p>}
         <form onSubmit={handleSubmit}>
           {props.columns
             .filter((item) => item.field !== "id" && item.field !== "img")
             .map((column) => (
-              <div className="item" key={column.field}>
+              <div className={`item ${column.type === "boolean" ? "checkbox-item" : ""}`} key={column.field}>
                 <label>{column.headerName}</label>
                 {column.type === "boolean" ? (
-                  <select
-                    value={formData[column.field] === true ? "true" : "false"}
-                    onChange={(e) => handleInputChange(column.field, e.target.value === "true")}
-                  >
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                  </select>
+                  <input type="checkbox" name={column.field} />
                 ) : (
                   <input
-                    type={column.type || "text"}
-                    placeholder={column.field as string}
-                    onChange={(e) => handleInputChange(column.field, e.target.value)}
+                    type="text"
+                    name={column.field}
+                    placeholder={column.headerName}
+                    maxLength={column.field === "phone" ? 10 : undefined}
+                    onKeyPress={(e) => {
+                      const isNumericField = ["price", "stock", "phone"].includes(column.field);
+                      if (isNumericField && !/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 )}
               </div>

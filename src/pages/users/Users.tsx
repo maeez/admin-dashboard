@@ -4,7 +4,7 @@ import "./Users.scss";
 import { useState } from "react";
 import Add from "../../components/add/Add";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers } from "../../services/productService";
+import { getUsers } from "../../services/queryService";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },

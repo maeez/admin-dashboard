@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProduct } from "../../services/productService";
+import { getProduct } from "../../services/queryService";
 import Single from "../../components/single/Single";
 import Update from "../../components/update/Update";
 import { singleProduct } from "../../data";
@@ -52,7 +52,7 @@ const Product = () => {
       Stock: product.stock,
     },
     chart: singleProduct.chart,
-    // activities: singleProduct.activities, <-- REMOVED THIS LINE
+    
   };
 
   return (

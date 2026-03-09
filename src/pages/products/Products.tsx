@@ -11,7 +11,7 @@ import {
 import {
   getProducts,
   deleteProduct,
-} from "../../services/productService";
+} from "../../services/queryService";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -49,24 +49,24 @@ const Products = () => {
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: async (newProduct: any) => {
-      const newId = Date.now() + Math.floor(Math.random() * 1000);
-      return {
-        ...newProduct,
-        id: newId,
-        thumbnail: newProduct.thumbnail || "/no-image.png",
-        price: Number(newProduct.price) || 0,
-        stock: Number(newProduct.stock) || 0,
-      };
-    },
-    onSuccess: (newData) => {
-      queryClient.setQueryData(["products"], (old: any[] | undefined) => {
-        return [newData, ...(old || [])];
-      });
-      setOpen(false);
-    },
-  });
+const createMutation = useMutation({
+  mutationFn: async (newProduct: any) => {
+    const newId = Date.now() + Math.floor(Math.random() * 1000);
+    return {
+      ...newProduct,
+      id: newId,
+      thumbnail: newProduct.thumbnail || "/no-image.png",
+      price: Number(newProduct.price),
+      stock: Number(newProduct.stock),
+    };
+  },
+  onSuccess: (newData) => {
+    queryClient.setQueryData(["products"], (old: any[] | undefined) => {
+      return [newData, ...(old || [])];
+    });
+    setOpen(false);
+  },
+});
 
   if (isLoading) return <p>Loading...</p>;
 

@@ -35,6 +35,22 @@
         gap: 10px;
         margin-bottom: 20px;
 
+        &.checkbox-item {
+          flex-direction: row;
+          align-items: center;
+          gap: 15px;
+
+          label {
+            margin-bottom: 0;
+          }
+
+          input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+          }
+        }
+
         label {
           font-size: 12px;
         }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getUser } from "../../services/productService";
+import { getUser } from "../../services/queryService";
 import Single from "../../components/single/Single";
 import Update from "../../components/update/Update";
 import { singleUser } from "../../data";
