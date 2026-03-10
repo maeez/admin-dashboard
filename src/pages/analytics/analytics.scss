@@ -1,0 +1,167 @@
+@use "../../styles/variables" as vars;
+@use "../../styles/responsive" as resp;
+
+.analytics {
+  padding-bottom: 40px;
+
+  .analyticsHeader {
+    margin-bottom: 24px;
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: vars.$soft-color;
+      font-size: 14px;
+    }
+  }
+
+  .statsRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+
+    @include resp.lg {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include resp.sm {
+      grid-template-columns: 1fr;
+    }
+
+    .statCard {
+      background-color: vars.$soft-bg;
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .statLabel {
+        font-size: 13px;
+        color: vars.$soft-color;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .statValue {
+        font-size: 26px;
+        font-weight: 700;
+      }
+
+      .statChange {
+        font-size: 13px;
+        font-weight: 600;
+
+        &.positive {
+          color: #22c55e;
+        }
+
+        &.negative {
+          color: #ef4444;
+        }
+      }
+    }
+  }
+
+  .chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+
+    @include resp.lg {
+      grid-template-columns: 1fr;
+    }
+
+    .chartCard {
+      background-color: vars.$soft-bg;
+      border-radius: 10px;
+      padding: 24px;
+
+      &.wide {
+        grid-column: span 2;
+
+        @include resp.lg {
+          grid-column: span 1;
+        }
+      }
+
+      h2 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .chartDesc {
+        font-size: 13px;
+        color: vars.$soft-color;
+        margin-bottom: 20px;
+      }
+
+      &.summaryCard {
+        .categoryList {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          margin-top: 16px;
+
+          .categoryRow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            .catLeft {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              min-width: 130px;
+
+              .catDot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                flex-shrink: 0;
+              }
+
+              .catName {
+                font-size: 13px;
+              }
+            }
+
+            .catRight {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              flex: 1;
+
+              .catBar {
+                flex: 1;
+                height: 8px;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+                overflow: hidden;
+
+                .catFill {
+                  height: 100%;
+                  border-radius: 4px;
+                  transition: width 0.3s ease;
+                }
+              }
+
+              .catValue {
+                font-size: 13px;
+                font-weight: 600;
+                min-width: 36px;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

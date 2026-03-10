@@ -32,11 +32,23 @@ const Add = (props: Props) => {
 
     if (props.slug === "user") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (data.email && !emailRegex.test(data.email)) {
+
+     
+      if (!data.firstName || data.firstName.trim() === "") {
+    setError("First name is required.");
+    return;
+  }
+
+     if (!data.lastName || data.lastName.trim() === "") {
+    setError("Last name is required.");
+    return;
+  }
+
+      if (!data.email && !emailRegex.test(data.email)) {
         setError("Please enter a valid email address.");
         return;
       }
-      if (data.phone && data.phone.length !== 10) {
+      if (!data.phone || data.phone.length !== 10) {
         setError("Phone number must be exactly 10 digits.");
         return;
       }

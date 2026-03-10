@@ -1,25 +1,63 @@
+@use "../../styles/variables" as vars;
+@use "../../styles/responsive" as resp;
+
 .update {
   width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.724);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 999;
 
   .modal {
     padding: 50px;
     border-radius: 10px;
     background-color: #2a3447;
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 560px;
+    max-width: 95vw;
+
+    @media screen and (max-width: 768px) {
+      padding: 30px 20px;
+      width: 95vw;
+      max-height: 92vh;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: lightgray;
+
+      @media screen and (max-width: 768px) {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+    }
 
     .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: vars.$main-color;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
     }
 
     form {
@@ -28,12 +66,21 @@
       max-width: 500px;
       justify-content: space-between;
 
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+        max-width: 100%;
+      }
+
       .item {
         width: 40%;
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px;
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+        }
 
         &.checkbox-item {
           flex-direction: row;
@@ -56,12 +103,23 @@
         }
 
         input {
-          padding: 10px;
-          background-color: transparent;
-          color: white;
-          outline: none;
-          border: 1px solid white;
-          border-radius: 3px;
+          padding: 11px 14px;
+      background-color: vars.$dark-bg;
+      color: vars.$main-color;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 7px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: rgba(136, 132, 216, 0.7);
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+      }
         }
       }
 
@@ -69,6 +127,13 @@
         width: 100%;
         padding: 10px;
         cursor: pointer;
+        background-color: white;
+        color: #2a3447;
+        border: none;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-top: 10px;
+        min-height: 44px;
       }
     }
   }

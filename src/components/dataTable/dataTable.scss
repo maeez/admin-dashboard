@@ -1,8 +1,14 @@
+@use "../../styles/responsive" as resp;
+
 .dataTable{
 
   .dataGrid{
     background: white;
     padding: 20px;
+
+    @include resp.sm {
+      padding: 10px;
+    }
 
     .MuiDataGrid-toolbarContainer{
       flex-direction: row-reverse;
@@ -18,6 +24,15 @@
     .action{
       display: flex;
       gap: 15px;
+      align-items: center;
+
+      a, .delete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+      }
 
       img{
         width: 20px;

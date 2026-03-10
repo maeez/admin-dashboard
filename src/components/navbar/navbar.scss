@@ -12,7 +12,33 @@
     align-items: center;
     font-weight: bold;
     gap: 10px;
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      min-width: 44px;
+      min-height: 44px;
+
+      span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background-color: white;
+        border-radius: 2px;
+      }
+
+      @include resp.md {
+        display: flex;
+      }
+    }
   }
+
   .icons {
     display: flex;
     align-items: center;
@@ -42,7 +68,9 @@
         font-size: 12px;
       }
     }
-
+.seti{
+  margin-top: 5px;
+}
     .user {
       display: flex;
       align-items: center;

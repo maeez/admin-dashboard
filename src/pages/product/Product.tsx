@@ -69,6 +69,7 @@ const Product = () => {
       Stock: product.stock,
     },
     chart: singleProduct.chart,
+    activities: [],   
     
   };
 

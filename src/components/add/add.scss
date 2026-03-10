@@ -1,14 +1,19 @@
+@use "../../styles/variables" as vars;
+@use "../../styles/responsive" as resp;
+
+
+
 .add {
   width: 100vw;
   height: 100vh;
-  position: fixed; // Changed from absolute to fixed to cover the viewport
+  position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.724);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999; // Ensures it sits above the DataTable
+  z-index: 999;
 
   .modal {
     padding: 50px;
@@ -16,19 +21,45 @@
     background-color: #2a3447;
     position: relative;
     max-height: 90vh;
-    overflow-y: auto; // Adds scroll if the form is too long
+    overflow-y: auto;
+    width: 560px;
+    max-width: 95vw;
 
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      font-weight: bold;
+    @media screen and (max-width: 768px) {
+      padding: 30px 20px;
+      width: 95vw;
+      max-height: 92vh;
     }
 
+    
+
+   .close {   
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: vars.$main-color;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }}
     h1 {
       margin-bottom: 40px;
       color: lightgray;
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 24px;
+        font-size: 20px;
+      }
     }
 
     form {
@@ -37,12 +68,21 @@
       max-width: 500px;
       justify-content: space-between;
 
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+        max-width: 100%;
+      }
+
       .item {
         width: 45%;
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-bottom: 20px;
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+        }
 
         &.checkbox-item {
           flex-direction: row;
@@ -65,16 +105,23 @@
         }
 
         input {
-          padding: 10px;
-          background-color: transparent;
-          color: white;
+          padding: 11px 14px;
+          background-color: vars.$dark-bg;
+          color: vars.$main-color;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 7px;
+          font-size: 14px;
+          font-family: inherit;
           outline: none;
-          border: 1px solid white;
-          border-radius: 3px;
+          transition: border-color 0.2s;
 
-          &::placeholder {
-            color: #555;
-          }
+      &:focus {
+        border-color: rgba(136, 132, 216, 0.7);
+      }
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+      }
         }
       }
 
@@ -88,6 +135,7 @@
         font-weight: bold;
         border-radius: 5px;
         margin-top: 10px;
+        min-height: 44px;
       }
     }
   }

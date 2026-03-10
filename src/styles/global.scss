@@ -5,6 +5,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+    scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+html, body {
+  background-color: #2a3447;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
 a {
@@ -20,6 +29,7 @@ a {
 
 .container {
   display: flex;
+  position: relative;
 }
 
 .menuContainer {
@@ -27,12 +37,59 @@ a {
   padding: 5px 20px;
   border-right: 2px solid vars.$soft-bg;
 
-  @include resp.lg{
+  @include resp.lg {
     width: max-content;
+  }
+
+  @include resp.md {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    height: 100vh;
+    width: 260px;
+    background-color: vars.$main-bg;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: left 0.3s ease;
+    padding: 20px;
+    border-right: 2px solid vars.$soft-bg;
+
+    &.menuOpen {
+      left: 0;
+    }
+
+    .listItemTitle {
+      display: block !important;
+    }
+
+    .title {
+      display: block !important;
+    }
+  }
+}
+
+.menuOverlay {
+  display: none;
+
+  @include resp.md {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
   }
 }
 
 .contentContainer {
   padding: 5px 20px;
   width: 100%;
+  overflow-x: hidden;
+
+  @include resp.sm {
+    padding: 5px 10px;
+  }
 }
+

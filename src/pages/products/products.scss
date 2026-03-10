@@ -1,14 +1,26 @@
+@use "../../styles/variables" as vars;
+@use "../../styles/responsive" as resp;
+
 .products{
 
-  .info{
+ .info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
     margin-bottom: 20px;
 
-    button{
-      padding: 5px;
+     button {
+      padding: 10px 20px;
       cursor: pointer;
+      background-color: vars.$main-color;
+      color: vars.$dark-color;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+
+      &:hover {
+        background-color: #ddd;
+      }
     }
   }
 }

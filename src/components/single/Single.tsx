@@ -80,8 +80,10 @@ const Single = (props: Props) => {
         )}
       </div>
       <div className="activities">
-        <h2>Latest Activities</h2>
-        {props.activities && (
+        
+        {props.activities && props.activities.length > 0 && (
+          <>
+          <h2>Latest Activities</h2>
           <ul>
             {props.activities.map((activity) => (
               <li key={activity.text}>
@@ -92,6 +94,7 @@ const Single = (props: Props) => {
               </li>
             ))}
           </ul>
+          </>
         )}
       </div>
     </div>

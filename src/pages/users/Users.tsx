@@ -19,8 +19,8 @@ const columns: GridColDef[] = [
   { field: "firstName", headerName: "First name", width: 150 },
   { field: "lastName", headerName: "Last name", width: 150 },
   { field: "email", headerName: "Email", width: 200 },
-  { field: "phone", headerName: "Phone", width: 200 },
-  { field: "verified", headerName: "Verified", width: 150, type: "boolean" },
+  { field: "phone", headerName: "Phone", width: 200, hideable: true },
+  { field: "verified", headerName: "Verified", width: 150, type: "boolean", hideable: true },
 ];
 
 const Users = () => {
